@@ -1,1 +1,17 @@
 Notes from trading and exchanges by Larry Harris
+
+- Trading is a zero sum gmae
+- Instruments are fungible if one unit is indistinguishable from one another. This facilitates markets as a buyer is able to buy at the lowest price offerred by a seller.
+
+Key Recurrent Themes:
+1. Information asymmtries, well informed traders profit over those who arent. Who is buying what? How are orders fulfilled? Large orders are harder to fill all at once.
+2. Options
+3. Externalities, most importantly *order flow externatlity* - traders who offer to trade give other traders valuable options to trade for which the offerers are not compensated. 
+4. Market structure - consists of trading rules. **always consider what effects market structure has on trading strategies**
+5. Competition with free entry and exit. Trading strats that generate large profits attract traders who want to participate in those profits. This lowers the profits everyone makes on average. 
+6. Communitcaton adn computing tech
+7. Price correlations - markets for similar instruments are closely related, and compete for each other for order flow.
+8. Prinicipal-agent problems arise when agents do what they want to do rather than ehat their principals want them to do.
+9. Trust and creditworthiness. People are trustworthy when they do what they say they will, theyre creditworthy when they can do what they say they can do.
+10. Zero-sum game - winnings on one side equal the losses on the other
+
