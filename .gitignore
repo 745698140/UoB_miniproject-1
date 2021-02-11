@@ -1,2 +1,3 @@
 # add ignored files/directories here
 .DS_Store
+data/
