@@ -5,7 +5,7 @@ it to JSON that can be seralized
 from os import listdir
 
 # Put path to directory containing files here
-folder_dir = './test/'
+folder_dir = '../data/'
 files = listdir(folder_dir)
 
 for file in files:
@@ -13,18 +13,18 @@ for file in files:
         print(file+' ignored')
         continue
     else:
-        print('parsing '+file)
+        print('Parsing: '+file)
         file_in = open(folder_dir+file,'rt')
         file_out = open(folder_dir+file[:-4]+'.json','wt')
         file_working = file_in.read()
         file_in.close()
-        file_working = file_in.replace('\n','')
-        file_working = file_in.replace(' ','')
-        file_working = file_in.replace('["time",','{"time":')
-        file_working = file_in.replace('["bid",','"bid":')
-        file_working = file_in.replace('],["ask",',',"ask":')
-        file_working = file_in.replace(']]]]',']]},')
-        file_working = file_in.replace(']]]',']},')
+        file_working = file_working.replace('\n','')
+        file_working = file_working.replace(' ','')
+        file_working = file_working.replace('["time",','{"time":')
+        file_working = file_working.replace('["bid",','"bid":')
+        file_working = file_working.replace('],["ask",',',"ask":')
+        file_working = file_working.replace(']]]]',']]},')
+        file_working = file_working.replace(']]]',']},')
         final_file = '['+file_working[:-1]+']'
         file_out.write(final_file)
         file_out.close()
