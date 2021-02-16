@@ -1,0 +1,58 @@
+**Feature Engenering**
+
+Possible features we can use for engeneering are as below:
+
+a) Statistical features
+- Mid Price [1](A.1)
+- Financial Duration [1](A.2)
+- Average mid price [1](A.3)
+- Mid price deeper levels [1](A.4) 
+- Log returns [1](A.5)
+- Microprice [4]
+- Best bid price [4]
+- Best ask price [4]
+- Total quantity of all quotes [4]
+- Compeitive equilbrium price [4]
+- Cumalative sum of price levels [5](6/7)
+
+b) Volatitlity measures
+- Quadratic integrated variance [1](A.7)
+- Realized variance [1](A.9)
+- Realized kernel [1](A.10)
+- Realized pre average variance [1](A.11)
+- Polarized semi variance [1](A.12)
+- Realized bipower variation [1](A.13)
+- Realized bipower semivariance [1](A.14)
+- Jump variation [1](A.16)
+- Spot volatility [1](A.17)
+- Average spot volatility [1](A.18)
+
+c) Noise and uncertainty measures
+- Realizd quarticity [1](A.20)
+- Realized quarticity tripower [1](A.21)
+- Realized quarticity quadpower [1](A.22)
+- Noise variance [1](A.23/24)
+
+4)Price discovery features
+- Mid price weighted by order imbalance [1](A.25)
+- Volume imbalance [1](A.26), [4]
+- Bid-ask spread [1](A.27)[4]
+- Normalized bid ask spread [1](A.28)
+- Trading volume [4]
+- Trading freq 
+
+5) Labelling 
+- As described [2](2,3,4)
+- As described [5](8.)
+
+Other possibilites:
+- Autoencoders
+- Inception model (as used in [2]) see [3]
+Refs:
+[1] NTARKARIS, 2019. doi: 10.1109/ACCESS.2019.2924353
+[2] Zhang, 2020. arXiv:1808.03668v6
+[3] 9] C. Szegedy 2015. doi: 10.1109/CVPR.2015.7298594
+[4] Way, Cliff, 2012. https://arxiv.org/pdf/2012.00821.pdf
+[5] Tsantekidis, 2018. https://www.researchgate.net/publication/328474947_Using_Deep_Learning_for_price_prediction_by_exploiting_stationary_limit_order_book_features
+
+

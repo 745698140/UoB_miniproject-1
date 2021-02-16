@@ -43,6 +43,7 @@ TO DO
 ### Model selection
 
 1. Classification 
+2. Bayesian neural networks could be used to provide uncertainty measures which could be useful
 
 Perfer ensemble models and RNNs
 
@@ -53,7 +54,7 @@ We need to add more details about backlog tests and other evaluation methods.
 ### Problems
 
 We donnot use transaction data only using LOB data.
-
+For how long is our model valid? Should we 'untrain' our model at any point??
 
 
 
