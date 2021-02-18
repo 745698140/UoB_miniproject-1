@@ -3,10 +3,11 @@ Run this for the folder containing all the DAVESON with [ ] to change
 it to JSON that can be seralized
 """
 from os import listdir
+logs= []
 
 def log(str):
     print(str)
-    logs+= str+'\n'
+    logs.append(str)
 
 def process_file(file):
     file_working = file.replace('\n','')
@@ -20,9 +21,8 @@ def process_file(file):
     return final_file
 
 # Put path to directory containing files here
-folder_dir = '/home/charliepearce/UoB_miniproject/data/b_02/lob3/'
+folder_dir = '../data/'
 files = listdir(folder_dir)
-logs= ''
 log('dir '+folder_dir)
 
 for file in files:
@@ -53,4 +53,3 @@ log('Job Done')
 
 with open(folder_dir+'log.txt','wt') as log_file:
     log_file.write(str(logs))
-    log_file.close()
