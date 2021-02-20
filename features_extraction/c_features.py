@@ -1,45 +1,54 @@
 import numpy as np
 import json
 
+class lob:
+    def __init__(self, json_lob):
+        self.bid = np.array(json_lob['bid'])
+        self.ask = np.array(json_lob['ask'])
+        self.time = json_lob['time']
+        # In the form [p,v]
+        self.max_bid = self.bid[np.argmax(self.bid[:,0])]
+        self.min_ask = self.ask[np.argmin(self.ask[:,0])]
 
-# Load sample JSON and decode into varible
-with open('./feature_testing.json') as json_file:
-    features = json.load(json_file)
+    # Microprice, volume weighted midprice
+    def microprice(self):
+        microprice = (self.max_bid[0]*self.min_ask[1] + self.max_bid[1]*self.min_ask[0])/ \
+        (self.min_ask[1]+self.max_bid[1])
+        return microprice
 
-samples = features[1:10]
-sample = features[1]
+    # Total quanitity of all bid ask quotes
+    def total_quantity_all_quotes(self):
+        total_bid = np.sum(self.bid[:,1])
+        total_ask = np.sum(self.ask[:,1])
+        return total_bid+total_ask
 
-## Statistical features
-# Takes in a number of samples and returns the AMFD
-def average_midprice_financial_duration(samples):
-    prices = np.zeros(len(samples))
-    times = np.zeros(len(samples))
+class lobs:
+    def __init__(self, lobs):
+        self.lob_lst = [lob(lob_entry) for lob_entry in lobs]
 
-    for i,lob in enumerate(samples):
-        times[i] = lob['time']
-        bid = np.array(lob['bid'])
-        ask = np.array(lob['ask'])
-        max_bid = np.amax(bid)
-        min_ask = np.amax(ask)
-        prices[i] = float(min_ask-max_bid)
+    # Take in a list of lobs and calculate AMFD
+    def average_midprice_financial_duration(self):
+        prices = np.zeros(len(self.lob_lst))
+        times = np.zeros(len(self.lob_lst))
+        
+        for i,lob in enumerate(self.lob_lst):
+            times[i] = lob.time
+            prices[i] = float(lob.min_ask[0]-lob.max_bid[0])
 
-    mfd = np.cumsum(times)/np.cumsum(prices)
-    amfd = np.mean(mfd)
-    return amfd
+        mfd = np.cumsum(times)/np.cumsum(prices)
+        amfd = np.mean(mfd)
+        return amfd
 
-# Microprice, volume weighted midprice
-def microprice(lob):
-    bid = np.array(lob['bid'])
-    ask = np.array(lob['ask'])
-    max_bid = np.argmax(bid)
-    min_ask = np.argmin(ask)
-    microprice = (bid[max_bid][0]*ask[min_ask][1] + bid[max_bid][1]*ask[min_ask][0])/(ask[min_ask][1]+bid[max_bid][1])
-    return microprice
+if __name__ == '__main__':
+    # Load sample JSON and decode into varible
+    with open('./feature_testing.json') as json_file:
+        features = json.load(json_file)
+    
+    samples = features[1:10]
+    sample = features[10]
 
-# Total quanitity of all bid ask quotes
-def total_quantity_all_quotes(lob):
-    bid = np.array(lob['bid'])
-    ask = np.array(lob['ask'])
-    total_bid = np.sum(bid[:,1])
-    total_ask = np.sum(ask[:,1])
-    return total_bid+total_ask
+    lob_sample = lob(sample)
+    print(lob_sample.microprice())
+
+    lob_samples = lobs(samples)
+    print(lob_samples.average_midprice_financial_duration())
