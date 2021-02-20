@@ -6,12 +6,14 @@ class lob:
         self.bid = np.array(json_lob['bid'])
         self.ask = np.array(json_lob['ask'])
         self.time = json_lob['time']
+        # In the form [p,v]
+        self.max_bid = self.bid[np.argmax(self.bid[:,0])]
+        self.min_ask = self.ask[np.argmin(self.ask[:,0])]
 
     # Microprice, volume weighted midprice
     def microprice(self):
-        max_bid = np.argmax(self.bid)
-        min_ask = np.argmin(self.ask)
-        microprice = (self.bid[max_bid][0]*self.ask[min_ask][1] + self.bid[max_bid][1]*self.ask[min_ask][0])/(self.ask[min_ask][1]+self.bid[max_bid][1])
+        microprice = (self.max_bid[0]*self.min_ask[1] + self.max_bid[1]*self.min_ask[0])/ \
+        (self.min_ask[1]+self.max_bid[1])
         return microprice
 
     # Total quanitity of all bid ask quotes
@@ -31,9 +33,7 @@ class lobs:
         
         for i,lob in enumerate(self.lob_lst):
             times[i] = lob.time
-            max_bid = np.amax(lob.bid)
-            min_ask = np.amax(lob.ask)
-            prices[i] = float(min_ask-max_bid)
+            prices[i] = float(lob.min_ask[0]-lob.max_bid[0])
 
         mfd = np.cumsum(times)/np.cumsum(prices)
         amfd = np.mean(mfd)
@@ -43,8 +43,9 @@ if __name__ == '__main__':
     # Load sample JSON and decode into varible
     with open('./feature_testing.json') as json_file:
         features = json.load(json_file)
+    
     samples = features[1:10]
-    sample = features[1]
+    sample = features[10]
 
     lob_sample = lob(sample)
     print(lob_sample.microprice())
