@@ -5,18 +5,18 @@ Possible features we can use for engeneering are as below:
 a) Statistical features
 Y - Mid Price [1](A.1) 
 H - Financial Duration [1](A.2)
-C - Average mid price [1](A.3)
+C done - Average mid price [1](A.3)
 Y - Mid price deeper levels [1](A.4) 
 H - Log returns [1](A.5)
-C - Microprice [4]
+C done - Microprice [4]
 Y - Best bid price [4]
 H - Best ask price [4]
-C - Total quantity of all quotes [4]
+C done - Total quantity of all quotes [4]
 Y - Compeitive equilbrium price [4]
 H - Cumalative sum of price levels [5](6/7)
 
 b) Volatitlity measures
-C - Quadratic integrated variance [1](A.7)
+C - Quadratic integrated variance [1](A.7) TO DO
 Y - Realized variance [1](A.9)
 H - Realized kernel [1](A.10)
 C - Realized pre average variance [1](A.11)
