@@ -1,21 +1,20 @@
 import numpy as np
 import json
 
-
-# Load sample JSON and decode into varible
-with open('./feature_testing.json') as json_file:
-    features = json.load(json_file)
-
-samples = features[1:10]
-sample = features[1]
-
 ## Statistical features
 # Takes in a number of samples and returns the AMFD
-def average_midprice_financial_duration(samples):
-    prices = np.zeros(len(samples))
-    times = np.zeros(len(samples))
 
-    for i,lob in enumerate(samples):
+class lob:
+    def __init__(self, json_lob):
+        self.bid = np.array(json_lob['bid'])
+        self.ask = np.array(json_lob['ask'])
+        self.time = json_lob['time']
+
+def average_midprice_financial_duration(lobs):
+    prices = np.zeros(len(lobs))
+    times = np.zeros(len(lobs))
+
+    for i,lob in enumerate(lobs):
         times[i] = lob['time']
         bid = np.array(lob['bid'])
         ask = np.array(lob['ask'])
@@ -43,3 +42,11 @@ def total_quantity_all_quotes(lob):
     total_bid = np.sum(bid[:,1])
     total_ask = np.sum(ask[:,1])
     return total_bid+total_ask
+
+
+# Load sample JSON and decode into varible
+with open('./feature_testing.json') as json_file:
+    features = json.load(json_file)
+samples = features[1:10]
+sample = features[1]
+print(microprice(sample))
