@@ -1,12 +1,12 @@
 import numpy as np
-import json
+import json # Only need this to turn json obj into dict for testing
 
 class lob:
     def __init__(self, json_lob):
         self.bid = np.array(json_lob['bid'])
         self.ask = np.array(json_lob['ask'])
         self.time = json_lob['time']
-        # In the form [p,v]
+        # In the form [p,n]
         self.max_bid = self.bid[np.argmax(self.bid[:,0])]
         self.min_ask = self.ask[np.argmin(self.ask[:,0])]
 
@@ -21,6 +21,15 @@ class lob:
         total_bid = np.sum(self.bid[:,1])
         total_ask = np.sum(self.ask[:,1])
         return total_bid+total_ask
+    
+    def volume_imbalance(self):
+        v_bid = np.sum(self.bid[:,1])
+        v_ask = np.sum(self.ask[:,1])
+        vol_imbalance = v_bid/(v_ask+v_bid)
+        return vol_imbalance
+
+    def trading_volume(self):
+        pass
 
 class lobs:
     def __init__(self, lobs):
@@ -38,6 +47,22 @@ class lobs:
         mfd = np.cumsum(times)/np.cumsum(prices)
         amfd = np.mean(mfd)
         return amfd
+    
+    def label(self):
+        pass
+
+    def quadratic_int_var(self):
+        pass
+
+    def realized_pre_avg_var(self):
+        pass
+
+    def realized_bipower_semivar(self):
+        pass
+
+    def average_spot_volatility(self):
+        pass
+
 
 if __name__ == '__main__':
     # Load sample JSON and decode into varible
@@ -48,7 +73,7 @@ if __name__ == '__main__':
     sample = features[10]
 
     lob_sample = lob(sample)
-    print(lob_sample.microprice())
+    print(lob_sample.volume_imbalance())
 
     lob_samples = lobs(samples)
     print(lob_samples.average_midprice_financial_duration())
