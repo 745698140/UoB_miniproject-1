@@ -29,7 +29,7 @@ if __name__ == "__main__":
             'average_midprice_financial_duration': group_lobs.average_midprice_financial_duration()
         }
 
-        #print(new_row)
+        print(new_row)
         # Append to df
         df = df.append(new_row, ignore_index=True)
 
