@@ -17,7 +17,7 @@ if __name__ == "__main__":
         this_lob = lob(x)
         # Get groups of json given k
         if i >= k-1:
-            group_lobs = lobs(j_son[(i-k):i])
+            group_lobs = lobs(j_son[(i-(k-1)):(i+1)])
         else:
             group_lobs = lobs(j_son[:i])
         
@@ -29,7 +29,7 @@ if __name__ == "__main__":
             'average_midprice_financial_duration': group_lobs.average_midprice_financial_duration()
         }
 
-        print(new_row)
+        #print(new_row)
         # Append to df
         df = df.append(new_row, ignore_index=True)
 
