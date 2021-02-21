@@ -3,8 +3,8 @@ import json
 from c_features import lob, lobs
 
 if __name__ == "__main__":
-    path = "./data/TstB02_2022-01-04tapes.csv"
-    tapes = pd.read_csv(path, header=None)
+    #path = "./data/TstB02_2022-01-04tapes.csv"
+    #tapes = pd.read_csv(path, header=None)
     
     with open('./feature_testing.json') as json_file:
         j_son = json.load(json_file)
@@ -17,7 +17,7 @@ if __name__ == "__main__":
         this_lob = lob(x)
         # Get groups of json given k
         if i >= k-1:
-            group_lobs = lobs(j_son[k-1:i])
+            group_lobs = lobs(j_son[(i-k):i])
         else:
             group_lobs = lobs(j_son[:i])
         
@@ -28,7 +28,7 @@ if __name__ == "__main__":
             'total_quantity_all_quotes': this_lob.total_quantity_all_quotes(),
             'average_midprice_financial_duration': group_lobs.average_midprice_financial_duration()
         }
-        
+
         print(new_row)
         # Append to df
         df = df.append(new_row, ignore_index=True)
