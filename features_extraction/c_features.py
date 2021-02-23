@@ -5,7 +5,7 @@ class lob:
     def __init__(self, json_lob):
         self.bid = np.array(json_lob['bid'])
         self.ask = np.array(json_lob['ask'])
-        self.time = json_lob['time']
+        self.time = float(json_lob['time'])
         # In the form [p,n]
         self.max_bid = self.bid[np.argmax(self.bid[:,0])]
         self.min_ask = self.ask[np.argmin(self.ask[:,0])]
@@ -28,15 +28,12 @@ class lob:
         vol_imbalance = v_bid/(v_ask+v_bid)
         return vol_imbalance
 
-    def trading_volume(self):
-        pass
-
 class lobs:
     def __init__(self, lobs):
         self.lob_lst = [lob(lob_entry) for lob_entry in lobs]
 
     # Take in a list of lobs and calculate AMFD
-    def average_midprice_financial_duration(self):
+    def average_midprice_financial_duration(self, ):
         prices = np.zeros(len(self.lob_lst))
         times = np.zeros(len(self.lob_lst))
         
@@ -47,9 +44,6 @@ class lobs:
         mfd = np.cumsum(times)/np.cumsum(prices)
         amfd = np.mean(mfd)
         return amfd
-    
-    def label(self):
-        pass
 
     def quadratic_int_var(self):
         pass
@@ -62,6 +56,11 @@ class lobs:
 
     def average_spot_volatility(self):
         pass
+
+    #get this from the tapes rather than 
+    def trading_volume(self):
+        pass 
+
 
 
 if __name__ == '__main__':

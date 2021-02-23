@@ -37,7 +37,7 @@ Y - Noise variance [1](A.23/24)
 H - Mid price weighted by order imbalance [1](A.25)
 C - Volume imbalance [1](A.26), [4]
 Y - Bid-ask spread [1](A.27)[4]
-H - Normalized bid ask spread [1](A.28)
+H - Normalized bid ask spread [1](A.28) 
 C - Trading volume [4]
 Y - Trading freq 
 
