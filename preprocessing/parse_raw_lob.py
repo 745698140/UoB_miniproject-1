@@ -20,6 +20,8 @@ def process_file(file):
     file_working = file_working.replace('],["ask",',',"ask":')
     file_working = file_working.replace(']]]]',']]},')
     file_working = file_working.replace(']]]',']},')
+    file_working = file_working.replace('"bid":[]','"bid":[[0,0]]')
+    file_working = file_working.replace('"ask":[]','"ask":[[0,0]]')
     final_file = '['+file_working[:-1]+']'
     return final_file
     

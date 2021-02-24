@@ -1,25 +1,23 @@
 import pandas as pd
 import numpy as np
-import multiprocessing as mp
 from c_features import lob, lobs
+from tqdm import tqdm
 import json
 import time
 
 if __name__ == "__main__":
     
-    with open('./feature_testing.json') as json_file:
+    with open('../data/TstB02_2022-01-04LOBs.json') as json_file:
         j_son = json.load(json_file)
     
-    # Define no of featuers for matrix
-    num_features = 4
-    # Define number of previous lobs
+    # Define featuers for matrix, no k prev lobs
+    features = ['time','microprice','total_quantity_all_quotes','average_midprice_financial_duration']
     k = 10
     # Init feature matrix
-    feature_matrix = np.zeros((len(j_son), num_features))
-    # Create multiprocessing pool
+    feature_matrix = np.zeros((len(j_son), len(features)))
     tik = time.time()
 
-    for i, x in enumerate(j_son):
+    for i, x in enumerate(tqdm(j_son)):
         # Get json for this lob
         this_lob = lob(x)
         # Get groups of json given k
@@ -36,8 +34,8 @@ if __name__ == "__main__":
         
     tok = time.time()
     print(f'time taken for processing {tok-tik}')
-    print(feature_matrix[0])
 
-    columns=['time','microprice','total_quantity_all_quotes','average_midprice_financial_duration']
-    df = pd.DataFrame(feature_matrix,columns=columns)
-    df.to_csv('test.csv')
+    # Add to df, print head
+    df = pd.DataFrame(feature_matrix,columns=features).dropna(axis=0)
+    print(df.head())
+    df.to_csv('test.csv', index=False)
