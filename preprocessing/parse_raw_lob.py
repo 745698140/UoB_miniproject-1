@@ -4,7 +4,9 @@ it to JSON that can be seralized
 """
 import os
 import pandas as pd
-from datetime import datetime, timedelta
+import time
+from duplicate_lobs import remove_dup_null
+import json
 
 logs= []
 
@@ -20,8 +22,6 @@ def process_file(file):
     file_working = file_working.replace('],["ask",',',"ask":')
     file_working = file_working.replace(']]]]',']]},')
     file_working = file_working.replace(']]]',']},')
-    file_working = file_working.replace('"bid":[]','"bid":[[0,0]]')
-    file_working = file_working.replace('"ask":[]','"ask":[[0,0]]')
     final_file = '['+file_working[:-1]+']'
     return final_file
     
@@ -36,25 +36,32 @@ if __name__ == "__main__":
             log(file+' ignored')
             continue
         else:
+            tik = time.time()
+            
             try:
                 log('Parsing: '+file)
                 file_in = open(folder_dir+file,'rt', encoding = 'us-ascii')
-                file_out = open(folder_dir+file[:-4]+'.json','wt', encoding='us-ascii')
+                
                 file_working = file_in.read()
                 file_in.close()
-                processed_file = process_file(file_working)
-                file_out.write(processed_file)
-                file_out.close()
+                parsed_file = process_file(file_working)
+                processed_file = remove_dup_null(parsed_file)
+                with open(folder_dir+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                    json.dump(processed_file, outfile)
+                    
             except UnicodeDecodeError:
                 log(f'Decoding error for {file}')
                 log('Parsing with ignored errors: '+file)
                 file_in = open(folder_dir+file,'rt', encoding = 'us-ascii', errors='ignore')
-                file_out = open(folder_dir+file[:-4]+'.json','wt', encoding='us-ascii')
                 file_working = file_in.read()
                 file_in.close()
-                processed_file = process_file(file_working)
-                file_out.write(processed_file)
-                file_out.close()
+                parsed_file = process_file(file_working)
+                processed_file = remove_dup_null(parsed_file)
+                with open(folder_dir+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                    json.dump(processed_file, outfile)
+            
+            tok = time.time()
+            print(f'{file} processed in {tok-tik}')
     log('Job Done')
 
     with open(folder_dir+'log.txt','wt') as log_file:

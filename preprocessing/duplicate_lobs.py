@@ -1,19 +1,14 @@
 import json
+from tqdm import tqdm
 
-with open('/Users/charleshjpearce/Desktop/UoB/UoB_miniproject/data/TstB02_2022-01-04LOBs.json') as f:
-    j_son = json.load(f)
-
-s = 0
-processed_json = []
-for i, lob in enumerate(j_son):
-    if lob['ask'] == j_son[i-1]['ask'] and lob['bid'] == j_son[i-1]['bid']:
-        s += 1
-        continue
-    else:
-        processed_json.append(lob)
-
-with open('/Users/charleshjpearce/Desktop/UoB/UoB_miniproject/data/test_dup_removed.json', 'wt') as out:
-    json.dump(processed_json, out)
-
-print(f'number of duplicate lobs: {s}')
-print(f'total proportion of duplicate lobs: {s/len(j_son)}')
+def remove_dup_null(string_in):
+    print('Removing duplicate lobs and null vals')
+    j_son = json.loads(string_in)
+    processed_json = []
+    for i, lob in enumerate(tqdm(j_son)):
+        if (lob['ask'] == j_son[i-1]['ask'] and lob['bid'] == j_son[i-1]['bid']) \
+        or not lob['ask'] or not lob['bid']:
+            continue
+        else:
+            processed_json.append(lob)
+    return processed_json
