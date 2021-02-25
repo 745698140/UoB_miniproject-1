@@ -7,50 +7,71 @@
 '''
 from build_features import best_ask_price, average_midprice_financial_duration, best_bid_price
 import json
-from typing import NamedTuple
-from build_features import cumulative_sum_price_levels
 import pandas as pd
 from data_exploration import json_to_df, read_file
 import time 
+import multiprocessing
+import numpy as np
 from c_features import lob, lobs
+import os
 
-if __name__ == "__main__":
-    json_string = read_file('.','feature_testing.json')
-    df = json_to_df(json_string=json_string)
-    # df['test'] = df.apply(lambda x: cumulative_sum_price_levels(x['ask'], x['bid'], 10), axis=1)
-
-    start =  time.time()
-    df['best_ask_prices'] = df['ask'].apply(lambda x: best_ask_price(x))
-    df['best_bid_prices'] = df['bid'].apply(lambda x: best_bid_price(x))
-    # average midprice_financial duration
-    df['spread'] = df['best_ask_prices'] - df['best_bid_prices']
-    df['time_cumsum'] = df['time'].cumsum()
-    df['spread'] = df['spread'].cumsum()
-    df['mdf'] = df['time_cumsum'] / df['spread']
-    df['avg_midprice_fd'] = df['mdf'].rolling(10, min_periods=1).mean()
-    print("dataframe time is", time.time() - start)
-    # print(df['mdf'])
-    # print(df['spread'])
-    print(df['avg_midprice_fd'])
-    # print(df['time_cumsum'])
-
-####comapre#####
-    j_son = json.loads(json_string)
-    k = 10
-    a = []
-    start = time.time()
-    for i, x in enumerate(j_son):
-        # Get json for this lob
-        this_lob = lob(x)
-        # Get groups of json given k
-        if i >= k-1:
-            group_lobs = lobs(j_son[(i-(k-1)):(i+1)])
-        else:
-            group_lobs = lobs(j_son[:i+1])
+def get_features(json_data, num_features, time_window, batch_number):
+    print(f"starting process {batch_number} files at process {os.getpid()}")
+    feature_matrix = np.zeros((len(json_data), num_features))
+    # Create multiprocessing pool
+    tik = time.time()
+    try:
+        for i, entry in enumerate(json_data):
+            # Get json for this lob
+            if not entry['bid'] or not entry['ask']:
+                continue
+            this_lob = lob(entry)
+            # Get groups of json given k
+            if i >= time_window-1:
+                group_lobs = lobs(json_data[(i-(time_window-1)):(i+1)])
+            else:
+                group_lobs = lobs(json_data[:i+1])
+            
+            # Calculate vals, this could be done in parallel
+            feature_matrix[i][0] = this_lob.time
+            feature_matrix[i][1] = this_lob.microprice()
+            feature_matrix[i][2] = this_lob.total_quantity_all_quotes()
+            feature_matrix[i][3] = group_lobs.average_midprice_financial_duration()
         
-        # Calculate vals, this could be done in parallel
-        a.append(group_lobs.average_midprice_financial_duration())
-    print("json loop time is", time.time()-start)
+        tok = time.time()
+        print(f'time taken for processing {batch_number} is {tok-tik} s')
+        np.save('./data/features_extracted{batch_number}.npy', feature_matrix)
+        # columns=['time','microprice','total_quantity_all_quotes','average_midprice_financial_duration']
+        # df = pd.DataFrame(feature_matrix,columns=columns)
+        # df.to_csv(f'./data/test{batch_number}.csv')
+        print(f"finish processing {batch_number}!")
+
+    except Exception as error:
+        print(error)
+        return f"Error in batch {batch_number}, That is {error}"
+        
+if __name__ == "__main__":
+    json_string = read_file('.','data/TstB02_2022-01-04LOBs.json')
+    # json_string = read_file('.','data/test.json')
+    json_data = json.loads(json_string)
+    print('loaded json data')
+
+    # json_string2 = read_file('.','data/TstB02_2022-01-04LOBs.json')
+    # print("loaded json_string")
+    # df = json_to_df(json_string=json_string)
+    # df2 = json_to_df(json_string=json_string2)
+    # print("convert to df")
+    # tapes = pd.read_csv("data/TstB02_2022-01-04tapes.csv", header=None)
+
+    batch_size = 10000
+    pool = multiprocessing.Pool(3)
+    data = [(json_data[i:i+batch_size], 4, 10, i//batch_size) for i in range(0,len(json_data[:100000]), batch_size)]
+    results = pool.starmap_async(get_features, data)
+    if results.get()[0]:
+        print(results.get())
+    pool.close()
+    pool.join()
+    
 
    
     
