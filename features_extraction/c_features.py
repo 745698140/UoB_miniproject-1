@@ -28,12 +28,44 @@ class lob:
         vol_imbalance = v_bid/(v_ask+v_bid)
         return vol_imbalance
 
+    def cumulative_sum_price_levels(self, k:int):
+        common_levels = min(len(self.ask), len(self.bid))
+        if k > common_levels:
+            # print(f"{k} is out of bounds, we replace it with {common_levels}")
+            k = common_levels
+        return [sum(self.bid[:k, 1]), sum(self.ask[:k, 1])]
+    
+    def mid_price_weighted_by_order_imbalance(self):
+        return sum(self.bid[:,0]*self.bid[:1] + self.ask[:,0]*self.ask[:1])/(self.bid[:,1] + self.ask[:,1])
+
+    # price discovery features
+    def normalized_bid_ask_spread(spread:float,tick_size:float):
+        return spread/tick_size
+
+    # volatility
+    def realized_bipower_variation(return1:list, return2:list) -> float:
+        """
+        Parameters
+        ----------
+        return1 : list
+            r(X)_i
+        return2 : list
+            r(X)_{i-1} or r(X)_{i-2}
+
+        Returns
+        -------
+        float
+        """
+        return np.pi/2*(abs(return1)*abs(return2).sum())
+
+
 class lobs:
     def __init__(self, lobs):
-        self.lob_lst = [lob(lob_entry) for lob_entry in lobs]
+        #filter zero ask and bid 
+        self.lob_lst = [lob(lob_entry) for lob_entry in lobs if (lob_entry['ask'] and lob_entry['bid'])]
 
     # Take in a list of lobs and calculate AMFD
-    def average_midprice_financial_duration(self, ):
+    def average_midprice_financial_duration(self):
         prices = np.zeros(len(self.lob_lst))
         times = np.zeros(len(self.lob_lst))
         
