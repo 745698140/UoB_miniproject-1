@@ -58,7 +58,7 @@ if __name__ == "__main__":
                 parsed_file = process_file(file_working)
                 log(f'{file} parsed, dumping to file')
 
-                with open(file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                with s3.open(file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
                     json.dump(parsed_file, outfile)
                     
             except UnicodeDecodeError:
@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 parsed_file = process_file(file_working)
                 log(f'{file} parsed, dumping to file')
 
-                with open(file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                with s3.open(file[:-4]+'.json','w', encoding='us-ascii') as outfile:
                     json.dump(parsed_file, outfile)
             
             tok = time.time()

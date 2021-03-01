@@ -108,19 +108,23 @@ class lobs:
             sv += lob.spot_volatility()
             dt += lob.time
         return sv / dt
-    # This is just realized var
-    def quadratic_int_var(self):
-        pass
-
+    
+    # 
     def realized_pre_avg_var(self):
         pass
 
+    # 
     def realized_bipower_semivar(self):
         pass
 
-    #get this from the tapes rather than 
+    # Change in volume from last lob
     def trading_volume(self):
-        pass
+        last_two = self.lob_lst[-2:]
+        vols = []
+        for lob in last_two:
+            total_vol = np.sum(lob.bid[:,1])
+            vols.append(total_vol)
+        return abs(vols[0]-vols[1]) # should this be the abs value or +-
 
     def realized_variance(self):
         # https://www.wallstreetmojo.com/realized-volatility/
@@ -180,9 +184,6 @@ class lobs:
         RV = self.realized_variance()
         BV = self.realized_bipower_variation()
         return max(RV-BV, 0)
-
-
-
 
 if __name__ == '__main__':
     # Load sample JSON and decode into varible
