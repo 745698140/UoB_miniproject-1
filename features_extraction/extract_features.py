@@ -7,9 +7,8 @@ import time
 
 if __name__ == "__main__":
     
-    with open('./feature_testing.json') as json_file:
+    with open('/Users/charleshjpearce/Desktop/UoB/UoB_miniproject/data/TstB02_2022-01-04LOBs.json') as json_file:
         j_son = json.load(json_file)
-
     
     # Define featuers for matrix, no k prev lobs
     features = ['time','microprice','total_quantity_all_quotes','average_midprice_financial_duration']
@@ -19,9 +18,11 @@ if __name__ == "__main__":
     lob_list = []
     tik = time.time()
     
-    for _, x in enumerate(j_son):
+    print('Creating LOBjects')
+    for _, x in enumerate(tqdm(j_son)):
         lob_list.append(lob(x))
-
+    
+    print('Creating grouped lobs and feature matrix')
     for i, this_lob in enumerate(tqdm(lob_list)):
         # Get groups of json given k
         if i >= k-1:
@@ -42,11 +43,4 @@ if __name__ == "__main__":
     # Add to df, print head
     df = pd.DataFrame(feature_matrix,columns=features).dropna(axis=0)
     print(df.head())
-    df.to_csv('test.csv', index=False)
-
-
-"""
-Notes:
-Lob quantities are being calculated many times, once for each lob then multiple times for 
-each group lob -- optimize this.
-"""
+    df.to_csv('day_test.csv', index=False)

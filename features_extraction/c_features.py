@@ -30,7 +30,7 @@ class lob:
 
 class lobs:
     def __init__(self, lobs):
-        self.lob_lst = [lob(lob_entry) for lob_entry in lobs]
+        self.lob_lst = lobs
 
     # Take in a list of lobs and calculate AMFD
     def average_midprice_financial_duration(self, ):
@@ -44,7 +44,16 @@ class lobs:
         mfd = np.cumsum(times)/np.cumsum(prices)
         amfd = np.mean(mfd)
         return amfd
-
+    
+    def average_spot_volatility(self):
+        sv = 0
+        dt = 0
+        for lob in self.lob_lst:
+            # Coming from lob spot volatility
+            sv += lob.spot_volatility()
+            dt += lob.time
+        return sv / dt
+    # This is just realized var
     def quadratic_int_var(self):
         pass
 
@@ -52,9 +61,6 @@ class lobs:
         pass
 
     def realized_bipower_semivar(self):
-        pass
-
-    def average_spot_volatility(self):
         pass
 
     #get this from the tapes rather than 
