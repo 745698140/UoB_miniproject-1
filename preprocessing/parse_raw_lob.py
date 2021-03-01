@@ -42,28 +42,28 @@ if __name__ == "__main__":
             
             try:
                 log('Parsing: '+file)
-                file_in = s3.open(s3_bucket+'raw/'+file,'rt', encoding = 'us-ascii')
+                file_in = s3.open(file,'rt', encoding = 'us-ascii')
                 file_working = file_in.read()
                 file_in.close()
                 parsed_file = process_file(file_working)
                 processed_file = remove_dup_null(parsed_file)
-                with open(s3_bucket+'json/'+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                with open(file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
                     json.dump(processed_file, outfile)
                     
             except UnicodeDecodeError:
                 log(f'Decoding error for {file}')
                 log('Parsing with ignored errors: '+file)
-                file_in = s3.open(s3_bucket+'raw/'+file,'rt', encoding = 'us-ascii', errors = 'ignore')
+                file_in = s3.open(file,'rt', encoding = 'us-ascii', errors = 'ignore')
                 file_working = file_in.read()
                 file_in.close()
                 parsed_file = process_file(file_working)
                 processed_file = remove_dup_null(parsed_file)
-                with open(s3_bucket+'json/'+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                with open(file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
                     json.dump(processed_file, outfile)
             
             tok = time.time()
             print(f'{file} processed in {tok-tik}')
     log('Job Done')
 
-    with open(folder_dir+'log.txt','wt') as log_file:
+    with open('s3://uob-miniproject/b_02/'+'log.txt','wt') as log_file:
         log_file.write(str(logs))
