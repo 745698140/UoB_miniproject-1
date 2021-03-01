@@ -1,3 +1,4 @@
 # add ignored files/directories here
 .DS_Store
 data/
+charlie_aws_key.pem
