@@ -7,6 +7,7 @@ import pandas as pd
 import time
 from duplicate_lobs import remove_dup_null
 import json
+import s3fs
 
 logs= []
 
@@ -27,9 +28,10 @@ def process_file(file):
     
 # Put path to directory containing files here
 if __name__ == "__main__":
-    folder_dir = '../data/'
-    files = os.listdir(folder_dir)
-    log('dir '+folder_dir)
+    s3_bucket = 's3://uob-miniproject/b_02/'
+    s3 = s3fs.S3FileSystem(anon=False)
+    files = s3.ls(s3_bucket+'raw/')
+    log('dir '+s3_bucket)
 
     for file in files:
         if file.startswith('.') or not file.endswith('.txt'):
@@ -40,24 +42,23 @@ if __name__ == "__main__":
             
             try:
                 log('Parsing: '+file)
-                file_in = open(folder_dir+file,'rt', encoding = 'us-ascii')
-                
+                file_in = s3.open(s3_bucket+'raw/'+file,'rt', encoding = 'us-ascii')
                 file_working = file_in.read()
                 file_in.close()
                 parsed_file = process_file(file_working)
                 processed_file = remove_dup_null(parsed_file)
-                with open(folder_dir+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                with open(s3_bucket+'json/'+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
                     json.dump(processed_file, outfile)
                     
             except UnicodeDecodeError:
                 log(f'Decoding error for {file}')
                 log('Parsing with ignored errors: '+file)
-                file_in = open(folder_dir+file,'rt', encoding = 'us-ascii', errors='ignore')
+                file_in = s3.open(s3_bucket+'raw/'+file,'rt', encoding = 'us-ascii', errors = 'ignore')
                 file_working = file_in.read()
                 file_in.close()
                 parsed_file = process_file(file_working)
                 processed_file = remove_dup_null(parsed_file)
-                with open(folder_dir+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                with open(s3_bucket+'json/'+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
                     json.dump(processed_file, outfile)
             
             tok = time.time()
