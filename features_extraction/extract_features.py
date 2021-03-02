@@ -100,6 +100,8 @@ if __name__ == "__main__":
     s3_bucket = "s3://uob-miniproject/b_02/raw"
     file_names = load_data_from_s3(fs, s3_bucket, args.start_index, args.end_index)
     for file in file_names:
+        if '.json' not in file:
+            continue
         json_string = read_file(fs, '', file)
         json_data = json.loads(json_string)
         print('loaded json data')
