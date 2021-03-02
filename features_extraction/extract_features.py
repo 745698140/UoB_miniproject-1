@@ -38,8 +38,8 @@ def get_features(json_data, num_features, time_window, batch_number, loblevel, d
 
         # tok = time.time()
         # print(f'time taken for processing {batch_number} is {tok-tik} s')
-
-        np.save(os.path.join(write_path,f'features_{date}_{batch_number}.npy'), feature_matrix)
+        with open(os.path.join(write_path,f'features_{date}_{batch_number}.npy'),'wb') as f:
+            np.save(f, feature_matrix)
         
         # columns=['time','microprice','total_quantity_all_quotes','average_midprice_financial_duration']
         # df = pd.DataFrame(feature_matrix,columns=columns)
