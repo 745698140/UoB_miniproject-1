@@ -16,9 +16,9 @@ import s3fs
 import argparse
 
 
-def read_file(dir, file_name):
+def read_file(fs, dir, file_name):
     """read raw files"""
-    with open(os.path.join(dir, file_name), 'r', encoding='us-ascii') as f:
+    with fs.open(os.path.join(dir, file_name), 'r', encoding='us-ascii') as f:
         string = f.read()
     return string
 
@@ -83,24 +83,24 @@ def batch_features_extraction(time_window, end_index, json_data, num_features, l
     
     return feature_matrix
 
-def load_data_from_s3(fs, start, end):
-    s3_bucket = "s3://uob-miniproject/b_02/'"
-    files = fs.ls(s3_bucket+"json/")
+def load_data_from_s3(fs, s3_bucket, start, end):
+    files = fs.ls(s3_bucket)
     return files[start:end]
 
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("start_index", type=int)
-    parser.add_argument("end_index", type=int)
+    parser.add_argument("--start_index", type=int)
+    parser.add_argument("--end_index", type=int)
     args = parser.parse_args()
 
-    fs = s3fs.S3FileSystem(anon=True)
+    fs = s3fs.S3FileSystem(anon=False)
     # json_string = read_file('.','data/TstB02_2022-01-04LOBs.json')
-    file_names = load_data_from_s3(fs, args.start_index, args.end_index)
+    s3_bucket = "s3://uob-miniproject/b_02/raw"
+    file_names = load_data_from_s3(fs, s3_bucket, args.start_index, args.end_index)
     for file in file_names:
-        json_string = read_file('.', file)
+        json_string = read_file(fs, '', file)
         json_data = json.loads(json_string)
         print('loaded json data')
 
