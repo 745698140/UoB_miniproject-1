@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo yum install python3.7
+sudo yum install python3-devel
+git clone https://github.com/UoB-HSBC/UoB_miniproject.git
+sudo pip3 install -r UoB_miniproject/features_extraction/requirements.txt
