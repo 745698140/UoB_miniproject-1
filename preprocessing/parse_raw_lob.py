@@ -4,6 +4,7 @@ it to JSON that can be seralized
 """
 import time
 import json
+import os
 import s3fs
 
 logs= []
@@ -38,7 +39,7 @@ def remove_dup_null(string_in):
     
 # Put path to directory containing files here
 if __name__ == "__main__":
-    s3_bucket = 's3://uob-miniproject/b_02/'
+    s3_bucket = 's3://uob-miniproject/b_03/'
     s3 = s3fs.S3FileSystem(anon=False)
     files = s3.ls(s3_bucket+'raw/')
     log('dir '+s3_bucket)
@@ -77,5 +78,5 @@ if __name__ == "__main__":
             print(f'{file} processed in {tok-tik}')
     log('Job Done')
 
-    with open('s3://uob-miniproject/b_02/'+'log.txt','wt') as log_file:
+    with s3.open(dir+'log.txt','wt') as log_file:
         log_file.write(str(logs))
