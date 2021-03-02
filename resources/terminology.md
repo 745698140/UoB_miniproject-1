@@ -4,4 +4,4 @@
 - **Limit Order Book (LOB)**: all of the currently-received limit orders(including buying and selling)
 - **Market Order**: A market order is a buy or sell order to be executed immediately at the current market prices
 
-- **live stock prices**: calcualted via microprices or the last transaction pri
+- **live stock prices**: calcualted via microprices or the last transaction price.

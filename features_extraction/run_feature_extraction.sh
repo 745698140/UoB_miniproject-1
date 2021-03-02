@@ -1,8 +1,5 @@
 #!/bin/bash
+cd UoB_miniproject
+nohup python3 features_extraction/extract_features.py --start_index 0 --end_index 10
 
-# sudo yum install python3.7
-# sudo yum install python3-devel
 
-sudo pip3 install -r requirements.txt
-
-nohup python3 extract_features.py
