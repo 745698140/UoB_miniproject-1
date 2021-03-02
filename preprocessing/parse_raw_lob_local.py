@@ -5,7 +5,6 @@ it to JSON that can be seralized
 import time
 import json
 import os
-import s3fs
 
 logs= []
 
@@ -39,10 +38,9 @@ def remove_dup_null(string_in):
     
 # Put path to directory containing files here
 if __name__ == "__main__":
-    s3_bucket = 's3://uob-miniproject/b_03/'
-    s3 = s3fs.S3FileSystem(anon=False)
-    files = s3.ls(s3_bucket+'raw/')
-    log('dir '+s3_bucket)
+    dir = './'
+    log('dir '+dir)
+    files = os.listdir(dir)
 
     for file in files:
         # Check if file is .txt
@@ -53,30 +51,30 @@ if __name__ == "__main__":
             tik = time.time()
             try:
                 log('Parsing: '+file)
-                with s3.open(file,'rt', encoding = 'us-ascii') as file_in:
+                with open(dir+file,'rt', encoding = 'us-ascii') as file_in:
                     file_working = file_in.read()
 
                 parsed_file = process_file(file_working)
                 log(f'{file} parsed, dumping to file')
 
-                with s3.open(file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
+                with open(dir+file[:-4]+'.json','wt', encoding='us-ascii') as outfile:
                     json.dump(parsed_file, outfile)
                     
             except UnicodeDecodeError:
                 log(f'Decoding error for {file}')
                 log('Parsing with ignored errors: '+file)
-                with s3.open(file,'rt', encoding = 'us-ascii', errors = 'ignore') as file_in:
+                with open(dir+file,'rt', encoding = 'us-ascii', errors = 'ignore') as file_in:
                     file_working = file_in.read()
 
                 parsed_file = process_file(file_working)
                 log(f'{file} parsed, dumping to file')
 
-                with s3.open(file[:-4]+'.json','w', encoding='us-ascii') as outfile:
+                with open(dir+file[:-4]+'.json','w', encoding='us-ascii') as outfile:
                     json.dump(parsed_file, outfile)
             
             tok = time.time()
             print(f'{file} processed in {tok-tik}')
     log('Job Done')
 
-    with s3.open(dir+'log.txt','wt') as log_file:
+    with open(dir+'log.txt','wt') as log_file:
         log_file.write(str(logs))

@@ -85,8 +85,7 @@ class lob:
 
 class lobs:
     def __init__(self, lobs):
-        #filter zero ask and bid 
-        self.lob_lst = [lob(lob_entry) for lob_entry in lobs if (lob_entry['ask'] and lob_entry['bid'])]
+        self.lob_lst = lobs
 
     # Take in a list of lobs and calculate AMFD
     def average_midprice_financial_duration(self):
@@ -100,22 +99,32 @@ class lobs:
         mfd = np.cumsum(times)/np.cumsum(prices)
         amfd = np.mean(mfd)
         return amfd
-
-    def quadratic_int_var(self):
-        pass
-
+    
+    def average_spot_volatility(self):
+        sv = 0
+        dt = 0
+        for lob in self.lob_lst:
+            # Coming from lob spot volatility
+            sv += lob.spot_volatility()
+            dt += lob.time
+        return sv / dt
+    
+    # 
     def realized_pre_avg_var(self):
         pass
 
+    # 
     def realized_bipower_semivar(self):
         pass
 
-    def average_spot_volatility(self):
-        pass
-
-    #get this from the tapes rather than 
+    # Change in volume from last lob
     def trading_volume(self):
-        pass
+        last_two = self.lob_lst[-2:]
+        vols = []
+        for lob in last_two:
+            total_vol = np.sum(lob.bid[:,1])
+            vols.append(total_vol)
+        return abs(vols[0]-vols[1]) # should this be the abs value or +-
 
     def realized_variance(self):
         # https://www.wallstreetmojo.com/realized-volatility/
@@ -175,9 +184,6 @@ class lobs:
         RV = self.realized_variance()
         BV = self.realized_bipower_variation()
         return max(RV-BV, 0)
-
-
-
 
 if __name__ == '__main__':
     # Load sample JSON and decode into varible
