@@ -26,7 +26,7 @@ def read_file(fs, dir, file_name):
 
 def get_features(json_data, num_features, time_window, batch_number, loblevel, date, write_path):
     print(f"starting process {batch_number} files at process {os.getpid()}")
-    
+    fs = s3fs.S3FileSystem(anon=False)
     # Create multiprocessing pool
     # tik = time.time()
     try:
@@ -111,6 +111,7 @@ if __name__ == "__main__":
     for file in file_names:
         if '.json' not in file:
             continue
+        pool = multiprocessing.Pool(processes=args.processors)
         json_string = read_file(fs, '', file)
         json_data = json.loads(json_string)
         date = re.search(pattern, file).group()
@@ -124,11 +125,9 @@ if __name__ == "__main__":
         # tapes = pd.read_csv("data/TstB02_2022-01-04tapes.csv", header=None)
         start = time.time()
         batch_size = args.batch_size
-        processes = args.processors
         window_size = args.window_size
         number_features = 12
         loblevel = args.loblevel
-        pool = multiprocessing.Pool(processes=processes)
 
         # The first batch
         data = [(json_data[0:batch_size], number_features, window_size, 0, loblevel, date, write_path)]
