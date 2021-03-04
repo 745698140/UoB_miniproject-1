@@ -1,0 +1,13 @@
+#!/bin/bash
+
+sudo yum install python3.7 python3-devel python3-pip git gcc -y
+echo "start cloing repo !!!"
+git clone https://HaishuoFang:fhs202212@github.com/HaishuoFang/UoB_miniproject.git ./UoB_miniproject
+echo "finish cloning"
+ls
+sudo pip3 install -r UoB_miniproject/features_extraction/requirements.txt
+echo "finish configuration!! start running python"
+cd UoB_miniproject
+nohup python3 features_extraction/extract_features.py --start_index $1 --end_index $2 \
+--subpath_s3bucket $3 --batch_size 100000
+echo "finish features extraction!!"
