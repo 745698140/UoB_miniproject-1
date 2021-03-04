@@ -1,10 +1,5 @@
 # coding: utf-8
-'''
-@filename:extract_features_h.py
-@Createtime: 2021/02/22 16:22:52
-@author: Haishuo Fang
-@description: another possible extraction framework.
-'''
+
 import json
 import pandas as pd
 import time 
@@ -80,6 +75,9 @@ def batch_features_extraction(time_window, end_index, json_data, num_features, l
         feature_matrix[index][9] = group_lobs.realized_variance()
         feature_matrix[index][10] = group_lobs.positive_realized_semi_variance()
         feature_matrix[index][11] = group_lobs.negative_realized_semi_variance()
+        feature_matrix[index][12] = group_lobs.realized_bipower_variation()
+        feature_matrix[index][13] = group_lobs.jump_variation()
+
 
     
     return feature_matrix
@@ -126,7 +124,7 @@ if __name__ == "__main__":
         start = time.time()
         batch_size = args.batch_size
         window_size = args.window_size
-        number_features = 12
+        number_features = 14
         loblevel = args.loblevel
 
         # The first batch

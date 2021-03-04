@@ -61,13 +61,6 @@ class lob:
         """
         return np.pi/2*(abs(return1)*abs(return2).sum())
 
-    # def best_ask_price(self):
-    #     sorted_ask_list = sorted(self.ask, key=lambda x: x[0])
-    #     return sorted_ask_list[0][0]
-
-    # def best_bid_price(self):
-    #     sorted_bid_list = sorted(self.bid, key=lambda x: x[0])
-    #     return sorted_bid_list[-1][0]
 
     def mid_price(self):
         return (self.max_bid[0] + self.min_ask[0]) / 2
