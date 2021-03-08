@@ -7,8 +7,8 @@ class lob:
         self.ask = np.array(json_lob['ask'])
         self.time = float(json_lob['time'])
         # In the form [p,n]
-        self.bid = np.sort(self.bid, axis=0)[::-1]
-        self.ask = np.sort(self.ask, axis=0)
+        self.bid = self.bid[self.bid[:,0].argsort()][::-1]
+        self.ask = self.ask[self.ask[:,0].argsort()]
         self.max_bid = self.bid[0]
         self.min_ask = self.ask[0]
         self.common_levels = min(len(self.ask), len(self.bid))
