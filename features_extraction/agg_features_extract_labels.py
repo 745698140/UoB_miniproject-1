@@ -29,11 +29,17 @@ def save_arrays(fs, write_path, obj):
     with fs.open(write_path,'wb') as f:
         np.save(f, obj)
 
+def read_file_from_s3(fs, path):
+    with fs.open(path,'rb') as f:
+        obj = np.load(f)
+    return obj
 
 def agg_features_perday(files, args):
     pattern = re.compile("(?<=_)2022-[0-9]{2}-[0-9]{2}")
+    #skip the first one which is a dir
     date = re.search(pattern=pattern,string=files[0]).group()
-    feature_matrix = np.load(files[0])
+    feature_matrix = read_file_from_s3(fs, files[0])
+    #feature_matrix = np.load(files[1])
     cols = feature_matrix.shape[1]
     for file in files[1:]:
         current_date = re.search(pattern, file).group()
@@ -48,11 +54,12 @@ def agg_features_perday(files, args):
             date = current_date
             feature_matrix = np.array([]).reshape(0, cols)
 
-        current_features = np.load(file)
+        current_features = read_file_from_s3(fs, file)
         feature_matrix = np.concatenate((feature_matrix, current_features), axis=0)
-    # The final result
+    # The final day
+    print(f"save final day {current_date} labels and features")
     labels = extract_labels(feature_matrix[:,[0, args.mid_price_col]], args.window_size)
-    save_arrays(fs, os.path.join(dir, f"features_{date}.npy"), feature_matrix)
+    save_arrays(fs, os.path.join(args.s3_bucket, args.bucket_name, args.write_folder, f"features_{date}.npy"), feature_matrix)
     save_arrays(fs, os.path.join(args.s3_bucket, args.bucket_name, args.write_folder,f"labels_{date}.npy"),labels)
 
 
@@ -71,6 +78,9 @@ if __name__ == "__main__":
 
     fs = s3fs.S3FileSystem(anon=False)
     files = fs.ls(os.path.join(args.s3_bucket, args.bucket_name, args.read_folder))
+    if files[0].endswith("/"):
+        print(f"{files[0]} has been removed")
+        files.remove(files[0])
     # files=['./data/features_2022-01-04_0.npy','data/features_2022-01-04_1.npy','data/features_2022-01-05_0.npy']
     agg_features_perday(files, args)
 
