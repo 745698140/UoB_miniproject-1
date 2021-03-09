@@ -3,7 +3,7 @@ bucket="b_03"
 count=$(aws s3 ls s3://uob-miniproject/$bucket/json/ | wc -l)
 echo $count
 
-for((i=1;i<=$count;i=i+10));
+for((i=0;i<=$count;i=i+10));
 
 do
 end=$[ $i + 10 ]
